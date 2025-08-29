@@ -1,6 +1,6 @@
 // ===== Cranbourne Eagles JFC – Coaching EOI (2026) =====
 // Replace this with your deployed Google Apps Script Web App URL
-const SCRIPT_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzxg_YArQJtGDg5813RZOGAhkX-flIpc7SqY0ZUkupwyohvbcP2sZkGGC9U1wvl6ZJa/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGu__gK5_fdu2y70Up7hspzDOpaYHvCholADKUi1jdEC_ElPtR_yRqkonOFzumxPOP/exec";
 
 const form = document.getElementById('eoi-form');
 const statusBox = document.getElementById('status');
