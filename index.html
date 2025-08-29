@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cranbourne Eagles JFC • Coaching EOI – Season 2026</title>
+  <meta name="description" content="Coaching Expression of Interest form for the Cranbourne Eagles JFC – Season 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+  <meta name="color-scheme" content="light only">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="./assets/logo.svg" alt="Cranbourne Eagles" class="logo" />
+      <div class="brand-text">
+        <h1 class="club">Cranbourne Eagles JFC</h1>
+        <p class="tag">Coaching Expression of Interest (EOI) – Season 2026</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <form id="eoi-form" class="card" novalidate>
+      <h2 class="card-title">Coaching Expression of Interest</h2>
+
+      <div class="grid">
+        <label class="field">
+          <span>Full Name <b class="req">*</b></span>
+          <input type="text" name="full_name" placeholder="Your full name" required />
+          <small class="error"></small>
+        </label>
+
+        <label class="field">
+          <span>Email Address <b class="req">*</b></span>
+          <input type="email" name="email" placeholder="you@example.com" required />
+          <small class="error"></small>
+        </label>
+
+        <label class="field">
+          <span>Phone Number <b class="req">*</b></span>
+          <input type="tel" name="phone" placeholder="04xx xxx xxx" required />
+          <small class="error"></small>
+        </label>
+
+        <label class="field full">
+          <span>What team are you applying for? (e.g., U10 Girls, U14 Boys, etc.) <b class="req">*</b></span>
+          <input type="text" name="team_applied" placeholder="e.g., U14 Boys" required />
+          <small class="error"></small>
+        </label>
+
+        <fieldset class="field">
+          <legend>Role applying for <b class="req">*</b></legend>
+          <label class="opt"><input type="radio" name="role" value="Head Coach" required /> Head Coach</label>
+          <label class="opt"><input type="radio" name="role" value="Assistant Coach" /> Assistant Coach</label>
+          <small class="error"></small>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Have you coached junior football before? <b class="req">*</b></legend>
+          <label class="opt"><input type="radio" name="coached_before" value="Yes" required /> Yes</label>
+          <label class="opt"><input type="radio" name="coached_before" value="No" /> No</label>
+          <small class="error"></small>
+        </fieldset>
+
+        <label class="field full">
+          <span>If yes, please list your previous coaching experience (teams, years, levels).</span>
+          <textarea name="experience" rows="4" placeholder="e.g., U12 Girls (2023–2024), Assistant Coach; U10 Mixed (2022), Head Coach"></textarea>
+        </label>
+
+        <fieldset class="field">
+          <legend>Do you currently hold a Coaching Accreditation? If no, are you willing to obtain? <b class="req">*</b></legend>
+          <label class="opt"><input type="radio" name="accreditation" value="Yes" required /> Yes</label>
+          <label class="opt"><input type="radio" name="accreditation" value="No" /> No</label>
+          <small class="error"></small>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Do you have a current Working With Children Check (WWCC)? <b class="req">*</b></legend>
+          <label class="opt"><input type="radio" name="wwcc" value="Yes" required /> Yes</label>
+          <label class="opt"><input type="radio" name="wwcc" value="No, but willing to obtain one" /> No, but willing to obtain one</label>
+          <small class="error"></small>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Are you available for training, match days, and club events throughout the season? <b class="req">*</b></legend>
+          <label class="opt"><input type="radio" name="availability_season" value="Yes" required /> Yes</label>
+          <label class="opt"><input type="radio" name="availability_season" value="No" /> No</label>
+          <small class="error"></small>
+        </fieldset>
+
+        <label class="field full">
+          <span>What is your coaching philosophy or approach when working with junior players? <b class="req">*</b></span>
+          <textarea name="philosophy" rows="4" required placeholder="Describe your approach to player development, inclusivity, communication, etc."></textarea>
+          <small class="error"></small>
+        </label>
+
+        <label class="field full">
+          <span>How do you measure success in your coaching beyond wins and losses? <b class="req">*</b></span>
+          <textarea name="success_metrics" rows="4" required placeholder="e.g., skill development, player enjoyment, retention, teamwork, values, etc."></textarea>
+          <small class="error"></small>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="submit">Submit EOI</button>
+        <button class="btn ghost" type="reset">Reset</button>
+      </div>
+
+      <p class="privacy">By submitting this form you consent to Cranbourne Eagles JFC storing your details for the purposes of the 2026 coaching selection process.</p>
+    </form>
+
+    <section id="status" class="status hidden" aria-live="polite"></section>
+
+    <section class="notice card">
+      <h3>Next Steps</h3>
+      <p>You will be contacted after the closing date of <strong>5:00 pm, 19 September 2025</strong> to schedule an interview with the coaching panel.</p>
+      <p>We look forward to working with you in 2026! <span aria-label="blue and gold hearts">💙💛</span> <span aria-label="eagle">🦅</span></p>
+      <p class="signed">— Loretta</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© Cranbourne Eagles Junior Football Club • <span class="accent">We fly as one.</span></p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
