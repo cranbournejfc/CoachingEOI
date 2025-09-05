@@ -52,11 +52,15 @@
         </label>
 
         <fieldset class="field">
-          <legend>Role applying for <b class="req">*</b></legend>
-          <label class="opt"><input type="radio" name="role" value="Head Coach" required /> Head Coach</label>
-          <label class="opt"><input type="radio" name="role" value="Assistant Coach" /> Assistant Coach</label>
-          <small class="error"></small>
-        </fieldset>
+  <legend>Role applying for <b class="req">*</b></legend>
+  <label class="opt">
+    <input type="checkbox" name="role[]" value="Head Coach" required /> Head Coach
+  </label>
+  <label class="opt">
+    <input type="checkbox" name="role[]" value="Assistant Coach" /> Assistant Coach
+  </label>
+  <small class="error"></small>
+</fieldset>
 
         <fieldset class="field">
           <legend>Have you coached junior football before? <b class="req">*</b></legend>
