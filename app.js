@@ -4,11 +4,15 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGu__gK5_fdu2y70Up7
 
 const form = document.getElementById('eoi-form');
 const statusBox = document.getElementById('status');
+const thanks = document.getElementById('thanks');
+const newResponse = document.getElementById('new-response');
+
+let isProgrammaticReset = false;
 
 function showStatus(type, msg){
   statusBox.classList.remove('hidden');
-  statusBox.style.borderColor = type==='success' ? '#18a865' : '#c22';
-  statusBox.style.background = '#fff';
+  statusBox.dataset.persistent = (type === 'success') ? 'true' : 'false'; // don't auto-hide on success
+  statusBox.style.borderColor = type==='success' ? '#18a865' : (type==='error' ? '#c22' : '#e1e6f0');
   statusBox.textContent = msg;
   statusBox.scrollIntoView({behavior:'smooth', block:'center'});
 }
@@ -19,13 +23,13 @@ function validateForm(){
     const field = el.closest('.field, fieldset');
     const err = field ? field.querySelector('.error') : null;
     let ok = true;
-if (el.type === 'radio' || el.type === 'checkbox') {
-  const group = form.querySelectorAll(`input[name="${el.name}"]`);
-  ok = Array.from(group).some(i => i.checked);
-}
-}else{
+
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      const group = form.querySelectorAll(`input[name="${el.name}"]`);
+      ok = Array.from(group).some(i => i.checked);
+    } else {
       ok = !!el.value.trim();
-      if(el.type === 'email'){
+      if (el.type === 'email') {
         ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
       }
     }
@@ -41,24 +45,28 @@ form.addEventListener('submit', async (e) => {
     showStatus('error','Please complete all required fields.');
     return;
   }
+
   const fd = new FormData(form);
-  // Add a timestamp field for convenience
   fd.append('submitted_at', new Date().toISOString());
   showStatus('info','Submitting your EOI…');
 
   try{
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: fd,
-      headers: { /* CORS handled by Apps Script */ }
-    });
-    // Best-effort parse; fall back to generic success if opaque
-    let ok = res.ok;
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: fd });
     let data = {};
-    try { data = await res.json(); } catch { /* ignore */ }
-    if(ok || data?.status === 'success'){
-      showStatus('success','Thanks! Your EOI has been submitted successfully. We’ll be in touch after the closing date.');
-      form.reset();
+    try { data = await res.json(); } catch {}
+    if(res.ok || data?.status === 'success'){
+      // Show thank-you screen (no flicker)
+      if (thanks) {
+        isProgrammaticReset = true;
+        form.reset();
+        isProgrammaticReset = false;
+        form.classList.add('hidden');
+        thanks.classList.remove('hidden');
+        statusBox.classList.add('hidden'); // no need for banner now
+      } else {
+        showStatus('success','Thanks! Your EOI has been submitted successfully.');
+        isProgrammaticReset = true; form.reset(); isProgrammaticReset = false;
+      }
     }else{
       throw new Error(data?.message || `Submission failed (HTTP ${res.status}).`);
     }
@@ -68,7 +76,20 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Clear status on input
+// Don’t hide success message on programmatic reset
 form.addEventListener('input', () => {
+  if (isProgrammaticReset) return;
+  if (statusBox.dataset.persistent === 'true') return; // keep success visible
   statusBox.classList.add('hidden');
 });
+
+// Allow “Submit another response”
+if (newResponse) {
+  newResponse.addEventListener('click', (e) => {
+    e.preventDefault();
+    thanks.classList.add('hidden');
+    form.classList.remove('hidden');
+    statusBox.classList.add('hidden');
+    form.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
