@@ -19,11 +19,10 @@ function validateForm(){
     const field = el.closest('.field, fieldset');
     const err = field ? field.querySelector('.error') : null;
     let ok = true;
-    if(el.type === 'radio'){
-      // group validation
-      const group = form.querySelectorAll(`input[name="${el.name}"]`);
-      ok = Array.from(group).some(i => i.checked);
-    }else{
+  if (el.type === 'radio' || el.type === 'checkbox') {
+  const group = form.querySelectorAll(`input[name="${el.name}"]`);
+  ok = Array.from(group).some(i => i.checked);
+}else{
       ok = !!el.value.trim();
       if(el.type === 'email'){
         ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
