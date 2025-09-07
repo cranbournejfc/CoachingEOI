@@ -4,7 +4,7 @@ const SHEET_NAME = 'Responses';
 function doPost(e) {
   try {
     const p = e?.parameter || {};
-    const pp = e?.parameters || {};  // plural: arrays for multi-value fields
+    const pp = e?.parameters || {}; // arrays for multi-value fields
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
@@ -13,14 +13,12 @@ function doPost(e) {
       'coached_before','experience','accreditation','wwcc','availability_season',
       'philosophy','success_metrics'
     ];
-
     if (sheet.getLastRow() === 0) sheet.appendRow(headers);
 
-    // Join multiple role selections into one string
-    const roleSelections = pp.role || pp['role[]'] || [];
+    const roleSelections = pp.role || [];
     const roleValue = Array.isArray(roleSelections) && roleSelections.length
       ? roleSelections.join(', ')
-      : (p.role || p['role[]'] || '');
+      : (p.role || '');
 
     const row = [
       p.submitted_at || '',
@@ -37,13 +35,11 @@ function doPost(e) {
       p.philosophy || '',
       p.success_metrics || ''
     ];
-
     sheet.appendRow(row);
 
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'success' }))
       .setMimeType(ContentService.MimeType.JSON);
-
   } catch (err) {
     return ContentService
       .createTextOutput(JSON.stringify({ status:'error', message: String(err) }))
@@ -51,4 +47,4 @@ function doPost(e) {
   }
 }
 
-function doGet() { return ContentService.createTextOutput('OK'); }
+function doGet(){ return ContentService.createTextOutput('OK'); }
