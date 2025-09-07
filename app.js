@@ -1,5 +1,4 @@
 // ===== Cranbourne Eagles JFC – Coaching EOI (2026) =====
-// Replace this with your deployed Google Apps Script Web App URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGu__gK5_fdu2y70Up7hspzDOpaYHvCholADKUi1jdEC_ElPtR_yRqkonOFzumxPOP/exec";
 
 const form = document.getElementById('eoi-form');
@@ -11,7 +10,7 @@ let isProgrammaticReset = false;
 
 function showStatus(type, msg){
   statusBox.classList.remove('hidden');
-  statusBox.dataset.persistent = (type === 'success') ? 'true' : 'false'; // don't auto-hide on success
+  statusBox.dataset.persistent = (type === 'success') ? 'true' : 'false';
   statusBox.style.borderColor = type==='success' ? '#18a865' : (type==='error' ? '#c22' : '#e1e6f0');
   statusBox.textContent = msg;
   statusBox.scrollIntoView({behavior:'smooth', block:'center'});
@@ -19,71 +18,77 @@ function showStatus(type, msg){
 
 function validateForm(){
   let valid = true;
-  form.querySelectorAll('[required]').forEach(el => {
+  form.querySelectorAll('[required], fieldset').forEach(el => {
     const field = el.closest('.field, fieldset');
     const err = field ? field.querySelector('.error') : null;
     let ok = true;
 
+    if (el.tagName === 'FIELDSET') return;
+
     if (el.type === 'radio' || el.type === 'checkbox') {
       const group = form.querySelectorAll(`input[name="${el.name}"]`);
-      ok = Array.from(group).some(i => i.checked);
+      const anyRequired = Array.from(group).some(i => i.required);
+      ok = anyRequired ? Array.from(group).some(i => i.checked) : true;
     } else {
       ok = !!el.value.trim();
-      if (el.type === 'email') {
-        ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
-      }
+      if (el.type === 'email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
     }
     if(!ok){ valid = false; if(err) err.textContent = 'This field is required.'; }
     else if(err){ err.textContent = ''; }
   });
+
+  // Manual requirement: at least one role
+  const roleGroup = form.querySelectorAll('input[name="role"]');
+  const roleField = roleGroup[0]?.closest('fieldset');
+  const roleErr = roleField ? roleField.querySelector('.error') : null;
+  const hasRole = Array.from(roleGroup).some(i => i.checked);
+  if (!hasRole){ valid = false; if(roleErr) roleErr.textContent = 'Select at least one role.'; }
+  else if (roleErr){ roleErr.textContent = ''; }
+
   return valid;
 }
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if(!validateForm()){
-    showStatus('error','Please complete all required fields.');
-    return;
-  }
+  try {
+    if(!validateForm()){
+      showStatus('error','Please complete all required fields.');
+      return;
+    }
 
-  const fd = new FormData(form);
-  fd.append('submitted_at', new Date().toISOString());
-  showStatus('info','Submitting your EOI…');
+    const fd = new FormData(form);
+    fd.append('submitted_at', new Date().toISOString());
 
-  try{
+    showStatus('info','Submitting your EOI…');
     const res = await fetch(SCRIPT_URL, { method: 'POST', body: fd });
     let data = {};
     try { data = await res.json(); } catch {}
+
     if(res.ok || data?.status === 'success'){
-      // Show thank-you screen (no flicker)
       if (thanks) {
-        isProgrammaticReset = true;
-        form.reset();
-        isProgrammaticReset = false;
+        isProgrammaticReset = true; form.reset(); isProgrammaticReset = false;
         form.classList.add('hidden');
         thanks.classList.remove('hidden');
-        statusBox.classList.add('hidden'); // no need for banner now
+        statusBox.classList.add('hidden');
       } else {
         showStatus('success','Thanks! Your EOI has been submitted successfully.');
         isProgrammaticReset = true; form.reset(); isProgrammaticReset = false;
       }
-    }else{
+    } else {
       throw new Error(data?.message || `Submission failed (HTTP ${res.status}).`);
     }
-  }catch(err){
-    console.error(err);
+  } catch (err){
+    console.error('Submit error:', err);
     showStatus('error','Submission failed. Please try again later or email the club if the problem persists.');
   }
 });
 
-// Don’t hide success message on programmatic reset
 form.addEventListener('input', () => {
   if (isProgrammaticReset) return;
-  if (statusBox.dataset.persistent === 'true') return; // keep success visible
+  if (statusBox.dataset.persistent === 'true') return;
   statusBox.classList.add('hidden');
 });
 
-// Allow “Submit another response”
 if (newResponse) {
   newResponse.addEventListener('click', (e) => {
     e.preventDefault();
@@ -93,3 +98,4 @@ if (newResponse) {
     form.scrollIntoView({behavior:'smooth', block:'start'});
   });
 }
+
