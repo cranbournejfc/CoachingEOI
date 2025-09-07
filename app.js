@@ -6,9 +6,8 @@ const statusBox = document.getElementById('status');
 const thanks = document.getElementById('thanks');
 const newResponse = document.getElementById('new-response');
 
-let isProgrammaticReset = false;
-
 function showStatus(type, msg){
+  if (!statusBox) return alert(msg); // fallback if missing
   statusBox.classList.remove('hidden');
   statusBox.dataset.persistent = (type === 'success') ? 'true' : 'false';
   statusBox.style.borderColor = type==='success' ? '#18a865' : (type==='error' ? '#c22' : '#e1e6f0');
